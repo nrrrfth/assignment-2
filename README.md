@@ -17,7 +17,7 @@ analysis of the data. Make sure your query is the most optimized.
 4. What is the average profit from each order?
 5. What information can you give as BI Analyst?
 
-## Queries and Insights (also data visualization)
+## Queries
 1. answering question number 1 about which products are most frequently purchased each month
 ```sql
 SELECT
@@ -48,4 +48,40 @@ order by `Total_Sales` DESC
 `Limit`3
 ```
 
-3. answering question number 3 about 
+3. answering question number 3 about top selling product for each city
+```sql
+SELECT
+    `Product_Name`,
+    `City`,
+    `Category`,
+    `Total_Sales`
+FROM (
+    SELECT
+        `Product_Name`,
+        `City`,
+        `Category`,
+        SUM(`Sales`) AS `Total_Sales`,
+        ROW_NUMBER() OVER(PARTITION BY `City` ORDER BY SUM(`Sales`) DESC) AS `Rank`
+    FROM `sales`
+    GROUP BY `Product_Name`, `City`, `Category`
+) ranked_sales
+WHERE `Rank` = 1
+ORDER BY `Total_Sales` DESC;
+```
+4. answering question number 4 about average profit from each order
+```sql
+SELECT
+    `Order_ID`,
+    `Category`,
+    `Average_Profit`  AS `Total_Average_Profit`
+FROM (
+    SELECT
+        `Order_ID`,
+        `Category`,
+        AVG(`Profit`) AS `Average_Profit`
+    FROM `sales`
+    GROUP BY `Order_ID`, `Category`
+) avg_profit_per_category
+ORDER BY `Total_Average_Profit` DESC;
+```
+
