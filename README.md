@@ -38,4 +38,14 @@ FROM (
 WHERE `Rank` = 1;
 ```
 
+2. answering question number 2 about sales from each city and top 3 cities
+```sql
+select `City`,
+SUM(`Sales`) as `Total_Sales`
+from `sales`
+group by `City`
+order by `Total_Sales` DESC
+`Limit`3
+```
 
+3. answering question number 3 about 
